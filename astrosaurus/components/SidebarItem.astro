@@ -1,0 +1,20 @@
+---
+type Props = {
+  title: string;
+  url: string;
+};
+
+const { url, title } = Astro.props as Props;
+
+const currentUrl = Astro.url.pathname;
+---
+
+<a href={url}>
+  <li
+    class={`py-2 px-8  dark:hover:bg-slate-800 rounded-lg  cursor-pointer ${
+      url == currentUrl ? "text-main" : "text-gray-600 hover:bg-gray-200"
+    }  `}
+  >
+    {title}
+  </li>
+</a>

@@ -1,0 +1,84 @@
+---
+import crypto from "node:crypto";
+
+interface Props {
+  items: string[];
+  defaultActive: string;
+  group: string;
+}
+
+const { items = [], defaultActive = items[0], group = crypto.randomUUID() } = Astro.props;
+---
+
+<div data-astrosaurus-id={group} data-astrosaurus="tabs-group">
+  <div role="tablist" aria-orientation="horizontal" tabindex="0" class="flex border-b">
+    {
+      items.map((item) => {
+        const labelSlot = `${item}-label`;
+        return (
+          <button
+            type="button"
+            role="tab"
+            aria-selected="false"
+            data-astrosaurus-id={item}
+            data-astrosaurus="tab"
+            data-tab-state={defaultActive == item ? "active" : "inactive"}
+            class=" data-[tab-state=active]:text-main border-b-2 outline-none border-b-transparent data-[tab-state=active]:border-b-main data-[tab-state=active]:opacity-100 opacity-50 px-4 py-2 "
+            tabindex="-1"
+            data-orientation="horizontal"
+            data-radix-collection-item=""
+          >
+            {Astro.slots.has(labelSlot) ? (
+              <Fragment set:html={Astro.slots.render(labelSlot)} />
+            ) : (
+              item
+            )}
+          </button>
+        );
+      })
+    }
+  </div>
+  {
+    items.map((item) => {
+      return (
+        <section
+          data-astrosaurus="tabpanel"
+          data-astrosaurus-id={item}
+          data-tab-state={defaultActive == item ? "active" : "inactive"}
+          role="tabpanel"
+          tabindex="0"
+          class="data-[tab-state=active]:block hidden"
+        >
+          {Astro.slots.has(item) && <Fragment set:html={Astro.slots.render(item)} />}
+        </section>
+      );
+    })
+  }
+</div>
+
+<script is:inline>
+  const tabslists = document.querySelectorAll("[data-astrosaurus='tabs-group']");
+
+  for (const tablist of tabslists) {
+    const tabs = tablist.querySelectorAll("[data-astrosaurus='tab']");
+    const tabpanels = tablist.querySelectorAll("[data-astrosaurus='tabpanel']");
+
+    for (const tab of tabs) {
+      tab.onclick = () => {
+        const tabitems = [...tabs, ...tabpanels];
+
+        for (const tabitem of tabitems) {
+          tabitem.setAttribute("data-tab-state", "inactive");
+        }
+
+        tab.setAttribute("data-tab-state", "active");
+        const tabId = tab.getAttribute("data-astrosaurus-id");
+        for (const tabpanel of tabpanels) {
+          const tabpanelId = tabpanel.getAttribute("data-astrosaurus-id");
+          console.log(tabId, "==", tabpanelId);
+          if (tabpanelId == tabId) tabpanel.setAttribute("data-tab-state", "active");
+        }
+      };
+    }
+  }
+</script>

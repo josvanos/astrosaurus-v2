@@ -1,0 +1,91 @@
+---
+import SidebarItem from "./SidebarItem.astro";
+import MenuIcon from "./icons/MenuIcon.astro";
+
+const { pages = [], logo = "", title = "" } = Astro.props;
+
+const baseUrl = "/docs/";
+
+const sidebarSet = pages.reduce((acc: Record<string, SideItem>, page: any) => {
+  const url = page.url.replace(baseUrl, "") as string;
+
+  const item = {
+    title: page.frontmatter.title,
+    url: page.url,
+  };
+
+  if (!url.includes("/")) {
+    return { ...acc, [url]: item };
+  }
+  const [left, right] = url.split("/", 2);
+  const current = acc?.[left]?.items || [];
+
+  return {
+    ...acc,
+    [left]: {
+      title: left,
+      items: [...current, item],
+    },
+  };
+}, {});
+
+const sidebar = Object.values(sidebarSet);
+
+type SideItem = {
+  title: string;
+  url?: string;
+  items?: SideItem[];
+};
+---
+
+<script is:inline>
+  let isOpen = false;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const menu = document.getElementById("astrosaurus-menu");
+    const button = document.getElementById("astrosaurus-menu-open");
+
+    button.addEventListener("click", () => {
+      menu.classList.add("fixed");
+      menu.classList.remove("hidden");
+    });
+  });
+</script>
+
+<button id="astrosaurus-menu-open" class="fixed bottom-5 left-5 bg-gray-300 p-2 rounded-full">
+  <MenuIcon />
+</button>
+
+<nav
+  id="astrosaurus-menu"
+  class="fixed bottom-0 left-0 hidden sm:block w-80 p-8 border-r dark:border-none h-screen dark:bg-slate-900 z-40 bg-white"
+>
+  <div class="flex items-center space-x-4 pb-3">
+    <div
+      class="bg-gray-200 dark:bg-slate-800 w-12 h-12 text-xl flex items-center justify-center rounded-lg"
+    >
+      {logo}
+    </div>
+    <span class="text-lg font-bold dark:text-white">
+      {title}
+    </span>
+  </div>
+
+  <ul>
+    {
+      sidebar.map((page: any) => {
+        if (page.items) {
+          return (
+            <div>
+              <h5 class="my-4 font-semibold text-slate-900 dark:text-slate-200 "> {page.title} </h5>
+              {page?.items?.map((page) => (
+                <SidebarItem url={page.url} title={page.title} />
+              ))}
+            </div>
+          );
+        }
+        return <SidebarItem url={page.url} title={page.title} />;
+      })
+    }
+  </ul>
+</nav>

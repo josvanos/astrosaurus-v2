@@ -1,0 +1,37 @@
+---
+import { getConfig } from "../utils/config.mjs";
+import TwitterIcon from "./icons/TwitterIcon.astro";
+import GithubIcon from "./icons/GithubIcon.astro";
+const config = getConfig();
+
+const socialIcons = {
+  github: GithubIcon,
+  twitter: TwitterIcon,
+};
+
+const socials = Object.entries<any>(config?.socials || {})
+  .map(([provider, value]) => {
+    // @ts-ignore
+    let Icon = socialIcons[provider];
+
+    if (Icon) {
+      return { provider, Icon, url: value };
+    }
+
+    Icon = typeof value == "object" ? value?.icon : null;
+    if (Icon) {
+      return { provider, Icon, url: value?.url };
+    }
+
+    return { provider: "unkown", Icon, url: "" };
+  })
+  .filter((x) => x.url);
+---
+
+{
+  socials.map(({ url, Icon }) => (
+    <a class="hover:text-main dark:text-white " href={url}>
+      <Icon />
+    </a>
+  ))
+}

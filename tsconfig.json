@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "astrosaurus": ["astrosaurus/index.mjs"],
+      "astrosaurus/docs": ["astrosaurus/docs/layout.astro"],
+      "astrosaurus/*": ["astrosaurus/*"]
+    }
+  },
+  "extends": "astro/tsconfigs/strict"
+}

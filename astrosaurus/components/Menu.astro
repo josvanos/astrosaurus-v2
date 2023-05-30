@@ -1,0 +1,66 @@
+---
+import { getConfig } from "../utils/config.mjs";
+import DarkModeSwitch from "./DarkModeSwitch.astro";
+import Socials from "./Socials.astro";
+
+type Props = {
+  layout?: string; // works the same as css grid template areas
+  class?: string; // works the same as
+};
+
+const { layout = "logo links socials", class: className } = Astro.props;
+
+const config = getConfig();
+---
+
+<header
+  aria-label="Site Header"
+  class={`shadow-sm dark:bg-slate-800 dark:border-b dark:border-slate-700 ${className}`}
+>
+  <div class="mx-auto max-w-screen-xl p-4">
+    <div class="flex items-center justify-between gap-4 lg:gap-10">
+      {
+        layout.includes("logo") && (
+          <div class="flex items-center lg:w-0 lg:flex-1">
+            <a
+              href="/"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100"
+            >
+              <span class="sr-only">Logo</span>
+              {config?.site?.logo}
+            </a>
+            <div class="pl-3 text-lg text-gray-700 font-bold">{config?.site?.title}</div>
+          </div>
+        )
+      }
+
+      {
+        layout.includes("links") && (
+          <nav
+            aria-label="Site Nav"
+            class="gap-4 justify-self-end flex font-medium md:flex mr-2 justify-end"
+          >
+            {Object.entries(config.menu || {}).map(([key, menuitem]) => {
+              const link = typeof menuitem === "string" ? menuitem : menuitem.to;
+              const label = typeof menuitem === "string" ? key : menuitem.title;
+              return (
+                <a class="text-gray-900 dark:text-white" href={link}>
+                  {label}
+                </a>
+              );
+            })}
+          </nav>
+        )
+      }
+
+      {
+        layout.includes("socials") && (
+          <div class="border-l-2 border-l-slate-300 pl-4 items-center gap-4 sm:flex">
+            <Socials />
+            <DarkModeSwitch />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</header>

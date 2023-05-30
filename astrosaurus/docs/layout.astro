@@ -1,0 +1,43 @@
+---
+import { getConfig } from "astrosaurus/utils/config.mjs";
+import BaseLayout from "../components/BaseLayout.astro";
+import Menu from "astrosaurus/components/Menu.astro";
+import Sidebar from "astrosaurus/components/Sidebar.astro";
+
+const pages = await Astro.glob("/src/pages/docs/**/*.{md,mdx}");
+pages.sort(sortOnSidebarPosition);
+
+const astrosaurus = getConfig();
+
+function sortOnSidebarPosition(page1: any, page2: any) {
+  const position1 = page1?.frontmatter?.sidebar?.position || 100;
+  const position2 = page2?.frontmatter?.sidebar?.position || 100;
+  return position1 - position2;
+}
+
+const currentPage = Astro.url.pathname;
+---
+
+<BaseLayout>
+  <main class="flex">
+    <Sidebar pages={pages} logo={astrosaurus?.site?.logo} title={astrosaurus?.site?.title} />
+    <div class="flex-1 dark:bg-slate-800 ml-80">
+      <Menu layout="links socials" class="!shadow-none fixed w-[calc(100vw-20rem)] bg-white" />
+      <div class="flex">
+        <section class="px-16 mt-8 pt-8 pb-24 min-h-full">
+          <div class="max-w-screen-lg pb-8">
+            <article
+              id="article"
+              class="overflow-x-auto lg:min-w-[74ch] mx-auto my-3 prose prose-base dark:prose-invert prose-pre:text-[1rem] !prose-h2:no-underline prose-code:bg-primary/50"
+            >
+              <slot />
+            </article>
+          </div>
+          <!-- <PageCursor pages={pages} currentPage={currentPage} /> -->
+        </section>
+
+        <!-- <RightSidebar headings={Astro.props.headings || Astro?.props?.content?.astro?.headings} /> -->
+      </div>
+    </div>
+  </main>
+</BaseLayout>

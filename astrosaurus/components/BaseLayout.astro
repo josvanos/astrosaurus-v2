@@ -1,0 +1,17 @@
+---
+import { getConfig } from "astrosaurus/utils/config.mjs";
+import BaseHead from "./BaseHead.astro";
+const astrosaurus = getConfig();
+const lastPage = Astro.url.pathname.split("/").pop();
+---
+
+<html>
+  <head>
+    <BaseHead />
+    <title>{astrosaurus?.site?.title} - {lastPage}</title>
+    <slot name="head" />
+  </head>
+  <body class="dark:bg-slate-800">
+    <slot />
+  </body>
+</html>

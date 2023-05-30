@@ -1,0 +1,39 @@
+---
+title: Quickstart
+description: Docs intro
+layout: "astrosaurus/docs"
+sidebar: { position: 2 }
+---
+
+# Quickstart
+
+The fastest way to use astro is copy the starter template. This is also the recommended way. The template will
+include the astrosaurus npm package including some demo files and.
+
+## The starter template
+
+W
+
+### installation
+
+**`src/pages/posts/post-1.md`**
+
+```bash
+yarn add astrosaurus
+```
+
+### config
+
+```ts config.ts
+import { defineConfig } from "astrosaurus";
+
+defineConfig({
+  site: {
+    title: "Astrosaurus",
+    logo: "🦕",
+    description: "Your website description.",
+    editUrl: `https://github.com/withastro/astro/tree/main/examples/docs`,
+    inviteUrl: "https://github.com/withastro/astro",
+  },
+});
+```

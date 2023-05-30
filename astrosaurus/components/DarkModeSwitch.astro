@@ -1,0 +1,29 @@
+---
+import DarkIcon from "./icons/Dark.astro";
+import Light from "./icons/Light.astro";
+---
+
+<button id="astrosaurus-darkmode-switch" class="">
+  <span class="dark:hidden">
+    <DarkIcon />
+  </span>
+  <span class="text-white hidden dark:block"> <Light /></span>
+</button>
+
+<script is:inline>
+  const button = document.getElementById("astrosaurus-darkmode-switch");
+
+  button.onclick = () => {
+    const root = document.documentElement;
+    const theme = localStorage.getItem("darkmode");
+
+    if (theme === "dark") {
+      root.classList.remove("dark");
+      localStorage.setItem("darkmode", "light");
+      return;
+    }
+
+    root.classList.add("dark");
+    localStorage.setItem("darkmode", "dark");
+  };
+</script>
